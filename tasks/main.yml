@@ -19,21 +19,27 @@
        accept_hostkey=yes
 
 - name: install shell profile for pyenv
-  copy: src=profile.pyenv.sh
-        dest=/etc/profile.d/50-pyenv.sh
+  copy: src=pyenv-profile.sh
+        dest="/etc/profile.d/50-pyenv.sh"
         owner=root group=root mode=0644
+
+- name: install sudoer for pyenv
+  copy: src=pyenv-sudoers
+        dest="/etc/sudoers.d/50-pyenv"
+        owner=root group=root mode=0644
+
+#
+#
+#
 
 - name: install ve
   copy: src=ve
         dest=/usr/local/bin/ve
-        owner=root
-        group=root
-        mode=0755
+        owner=root group=root mode=0755
 
-- name: install shell profile for pyenv
-  copy: src=profile.pyenv.sh
-        dest=/etc/profile.d/50-pyenv.sh
-        owner=root group=root mode=0644
+#
+#
+#
 
 - name: ensure cache directory exists
   file: path="{{ python_source_path }}"
