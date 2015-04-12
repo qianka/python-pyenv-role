@@ -29,3 +29,33 @@
         owner=root
         group=root
         mode=0755
+
+- name: install shell profile for pyenv
+  copy: src=profile.pyenv.sh
+        dest=/etc/profile.d/50-pyenv.sh
+        owner=root group=root mode=0644
+
+- name: ensure cache directory exists
+  file: path="{{ python_source_path }}"
+        owner=root group=root mode=0755
+        state=directory
+  when: python_version is defined
+
+- name: download python source
+  get_url: url="{{ python_source_url }}"
+           dest="{{ python_source_path }}/{{ python_source_file }}"
+           sha256sum="{{ python_source_checksum }}"
+  when: python_version is defined
+
+- name: symlink python source
+  file: path="{{ python_source_path }}/{{ python_source_checksum }}"
+        src="{{ python_source_path }}/{{ python_source_file }}"
+        state=link
+  when: python_version is defined
+
+- name: install python
+  script: install-python.sh "{{ python_version }}"
+          creates="/opt/pyenv/versions/{{ python_version }}"
+  environment:
+    PYTHON_BUILD_MIRROR_URL: "file://{{ python_source_path }}"
+  when: python_version is defined
