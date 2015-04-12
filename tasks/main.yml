@@ -1,0 +1,31 @@
+---
+- name: install python deps
+  apt: pkg={{ item }}
+       state=present
+       update_cache=yes
+  with_items:
+    - build-essential
+    - libssl-dev
+    - zlib1g-dev
+    - libbz2-dev
+    - libreadline-dev
+    - libsqlite3-dev
+    - git
+
+- name: install pyenv from source
+  git: repo={{ pyenv_repo }}
+       dest=/opt/pyenv
+       update={{ pyenv_update }}
+       accept_hostkey=yes
+
+- name: install shell profile for pyenv
+  copy: src=profile.pyenv.sh
+        dest=/etc/profile.d/50-pyenv.sh
+        owner=root group=root mode=0644
+
+- name: install ve
+  copy: src=ve
+        dest=/usr/local/bin/ve
+        owner=root
+        group=root
+        mode=0755
