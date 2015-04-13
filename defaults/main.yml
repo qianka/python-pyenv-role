@@ -1,3 +1,5 @@
 ---
 pyenv_repo: https://github.com/yyuu/pyenv.git
 pyenv_update: yes
+
+python_source_path: /opt/sources
